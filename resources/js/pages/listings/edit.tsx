@@ -7,6 +7,26 @@ import { Label } from '@/components/ui/label';
 import { Textarea } from '@/components/ui/textarea';
 import InputError from '@/components/input-error';
 
+interface Listing {
+    id: number;
+    title: string;
+    description: string;
+    price_per_day: number;
+    location: string;
+    image_path: string | null;
+    is_available: boolean;
+    creator: {
+        id: number;
+        name: string;
+    };
+    [key: string]: unknown;
+}
+
+interface Props {
+    listing: Listing;
+    [key: string]: unknown;
+}
+
 interface ListingFormData {
     title: string;
     description: string;
@@ -17,33 +37,35 @@ interface ListingFormData {
     [key: string]: string | number | boolean | File | null;
 }
 
-export default function CreateListing() {
-    const { data, setData, post, processing, errors } = useForm<ListingFormData & { general?: string }>({
-        title: '',
-        description: '',
-        price_per_day: '',
-        location: '',
+export default function EditListing({ listing }: Props) {
+    const { data, setData, put, processing, errors } = useForm<ListingFormData & { general?: string }>({
+        title: listing.title,
+        description: listing.description,
+        price_per_day: listing.price_per_day.toString(),
+        location: listing.location,
         image: null,
-        is_available: true,
+        is_available: listing.is_available,
     });
 
     const handleSubmit = (e: React.FormEvent) => {
         e.preventDefault();
-        post(route('listings.store'));
+        put(route('listings.update', listing.id), {
+            forceFormData: true,
+        });
     };
 
     return (
         <AppShell>
-            <Head title="Create New Listing" />
+            <Head title={`Edit ${listing.title}`} />
             
             <div className="py-8">
                 <div className="max-w-2xl mx-auto px-4 sm:px-6 lg:px-8">
                     <div className="mb-8">
                         <h1 className="text-3xl font-bold text-gray-900 dark:text-white">
-                            ✨ Create New Listing
+                            ✏️ Edit Listing
                         </h1>
                         <p className="mt-2 text-gray-600 dark:text-gray-400">
-                            List your space and start earning money
+                            Update your listing details
                         </p>
                     </div>
 
@@ -110,8 +132,23 @@ export default function CreateListing() {
                                 </div>
                             </div>
 
+                            {listing.image_path && (
+                                <div className="mb-4">
+                                    <Label>Current Image</Label>
+                                    <div className="mt-2">
+                                        <img
+                                            src={`/storage/${listing.image_path}`}
+                                            alt={listing.title}
+                                            className="w-32 h-32 object-cover rounded-lg"
+                                        />
+                                    </div>
+                                </div>
+                            )}
+
                             <div>
-                                <Label htmlFor="image">Property Image</Label>
+                                <Label htmlFor="image">
+                                    {listing.image_path ? 'Replace Image' : 'Property Image'}
+                                </Label>
                                 <Input
                                     id="image"
                                     type="file"
@@ -147,7 +184,7 @@ export default function CreateListing() {
                                     Cancel
                                 </Button>
                                 <Button type="submit" disabled={processing}>
-                                    {processing ? 'Creating...' : 'Create Listing'}
+                                    {processing ? 'Updating...' : 'Update Listing'}
                                 </Button>
                             </div>
                         </form>
