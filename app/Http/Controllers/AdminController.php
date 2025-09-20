@@ -7,7 +7,6 @@ use App\Models\Booking;
 use App\Models\Listing;
 use App\Models\User;
 use Illuminate\Http\Request;
-use Inertia\Inertia;
 
 class AdminController extends Controller
 {
@@ -31,7 +30,7 @@ class AdminController extends Controller
             'recent_bookings' => Booking::with(['listing', 'user'])->latest()->take(5)->get(),
         ];
 
-        return Inertia::render('admin/dashboard', [
+        return view('admin.dashboard', [
             'stats' => $stats
         ]);
     }
@@ -51,7 +50,7 @@ class AdminController extends Controller
                 $data = User::withCount(['listings', 'bookings'])
                     ->latest()
                     ->paginate(10);
-                return Inertia::render('admin/users', [
+                return view('admin.users', [
                     'users' => $data
                 ]);
                 
@@ -60,7 +59,7 @@ class AdminController extends Controller
                     ->withCount('bookings')
                     ->latest()
                     ->paginate(10);
-                return Inertia::render('admin/listings', [
+                return view('admin.listings', [
                     'listings' => $data
                 ]);
                 
@@ -68,7 +67,7 @@ class AdminController extends Controller
                 $data = Booking::with(['listing', 'user'])
                     ->latest()
                     ->paginate(10);
-                return Inertia::render('admin/bookings', [
+                return view('admin.bookings', [
                     'bookings' => $data
                 ]);
                 

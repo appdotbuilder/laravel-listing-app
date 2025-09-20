@@ -5,7 +5,6 @@ use App\Http\Controllers\BookingController;
 use App\Http\Controllers\ListingController;
 use App\Models\Listing;
 use Illuminate\Support\Facades\Route;
-use Inertia\Inertia;
 
 Route::get('/health-check', function () {
     return response()->json([
@@ -22,7 +21,7 @@ Route::get('/', function () {
         ->take(6)
         ->get();
     
-    return Inertia::render('welcome', [
+    return view('welcome', [
         'listings' => $listings
     ]);
 })->name('home');
@@ -54,7 +53,7 @@ Route::middleware(['auth', 'verified'])->group(function () {
             ];
         }
         
-        return Inertia::render('dashboard', [
+        return view('dashboard', [
             'stats' => $stats
         ]);
     })->name('dashboard');

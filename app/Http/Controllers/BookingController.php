@@ -7,7 +7,6 @@ use App\Http\Requests\StoreBookingRequest;
 use App\Models\Booking;
 use App\Models\Listing;
 use Illuminate\Http\Request;
-use Inertia\Inertia;
 
 class BookingController extends Controller
 {
@@ -21,7 +20,7 @@ class BookingController extends Controller
             ->latest()
             ->paginate(10);
         
-        return Inertia::render('bookings/index', [
+        return view('bookings.index', [
             'bookings' => $bookings
         ]);
     }
@@ -33,7 +32,7 @@ class BookingController extends Controller
     {
         $listing = Listing::with('creator')->findOrFail($request->listing_id);
         
-        return Inertia::render('bookings/create', [
+        return view('bookings.create', [
             'listing' => $listing
         ]);
     }
@@ -71,7 +70,7 @@ class BookingController extends Controller
 
         $booking->load(['listing', 'listing.creator', 'user']);
         
-        return Inertia::render('bookings/show', [
+        return view('bookings.show', [
             'booking' => $booking
         ]);
     }

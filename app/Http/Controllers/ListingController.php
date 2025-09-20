@@ -9,7 +9,6 @@ use App\Models\Listing;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Log;
 use Illuminate\Support\Facades\Storage;
-use Inertia\Inertia;
 
 class ListingController extends Controller
 {
@@ -23,7 +22,7 @@ class ListingController extends Controller
             ->latest()
             ->paginate(12);
         
-        return Inertia::render('listings/index', [
+        return view('listings.index', [
             'listings' => $listings
         ]);
     }
@@ -33,7 +32,7 @@ class ListingController extends Controller
      */
     public function create()
     {
-        return Inertia::render('listings/create');
+        return view('listings.create');
     }
 
     /**
@@ -126,7 +125,7 @@ class ListingController extends Controller
     {
         $listing->load('creator');
         
-        return Inertia::render('listings/show', [
+        return view('listings.show', [
             'listing' => $listing
         ]);
     }
@@ -141,7 +140,7 @@ class ListingController extends Controller
             abort(403);
         }
 
-        return Inertia::render('listings/edit', [
+        return view('listings.edit', [
             'listing' => $listing
         ]);
     }
